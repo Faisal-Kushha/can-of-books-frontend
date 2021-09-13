@@ -1,7 +1,10 @@
-a{
-  color:#fff;
+a {
+  color: #fff;
 }
 
-a:hover{
-  color:darkgrey;
+a:hover {
+  color: darkgrey;
+}
+header {
+  bottom: 500px;
 }
