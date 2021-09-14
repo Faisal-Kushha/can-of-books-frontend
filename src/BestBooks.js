@@ -4,7 +4,8 @@ import "./BestBooks.css";
 import Card from "react-bootstrap/Card";
 import { withAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
-// import Carousel from "react-bootstrap/Carousel";
+import Button from "react-bootstrap/Button";
+import BookFormModal from "./Components/BookFormModal";
 
 class MyFavoriteBooks extends React.Component {
   constructor(props) {
@@ -17,38 +18,63 @@ class MyFavoriteBooks extends React.Component {
   componentDidMount = () => {
     const { user } = this.props.auth0;
     const email = user.email;
-    axios.get(`http://localhost:3001/books?email=${email}`).then((result) => {
-      this.setState({
-        booksArr: result.data,
+    axios
+      .get(`https://can-of-books-b.herokuapp.com/books?email=${email}`)
+      .then((result) => {
+        this.setState({
+          booksArr: result.data,
+        });
+      })
+      .catch((err) => {
+        console.log("error");
       });
+  };
+  getting = (obj) => {
+    this.setState({
+      booksArr: obj,
     });
   };
+  deleteBook = (id) => {
+    const { user } = this.props.auth0;
+    const email = user.email;
+    axios
+      .delete(
+        `https://can-of-books-b.herokuapp.com/deletebooks/${id}?email=${email}`
+      )
+      .then((result) => {
+        this.setState({
+          booksArr: result.data,
+        });
+      })
+      .catch((err) => {
+        console.log("Error on deleting");
+      });
+  };
+
   render() {
     return (
       <>
         <h1>My Favorite Books</h1>
         <p>This is a collection of my favorite books</p>
-
+        <BookFormModal getting={this.getting} />
         {this.state.booksArr.map((item) => {
           return (
-            <Card>
-              <Card.Body>
-                <Card.Title>Title: {item.title}</Card.Title>
-                <Card.Text>Description: {item.description}</Card.Text>
-                <Card.Text>Status: {item.status}</Card.Text>
-                <Card.Text>Email: {item.email}</Card.Text>
-              </Card.Body>
-            </Card>
-            // <Carousel>
-            //   <Carousel.Item>
-            //     <Carousel.Caption>
-            //       Title: {item.title}
-            //       Description: {item.description}
-            //       Status: {item.status}
-            //       Email: {item.email}
-            //     </Carousel.Caption>
-            //   </Carousel.Item>
-            // </Carousel>
+            <>
+              <Card>
+                <Card.Body>
+                  <Card.Title>Title: {item.title}</Card.Title>
+                  <Card.Text>Description: {item.description}</Card.Text>
+                  <Card.Text>Status: {item.status}</Card.Text>
+                  <Card.Text>Email: {item.email}</Card.Text>
+                  <Button
+                    variant="secondary"
+                    onClick={() => this.deleteBook(item._id)}
+                  >
+                    Delete
+                  </Button>
+                </Card.Body>
+              </Card>
+            </>
           );
         })}
       </>
