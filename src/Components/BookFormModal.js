@@ -47,7 +47,7 @@ class BookFormModal extends React.Component {
     return (
       <>
         <Button variant="primary" onClick={this.handleShow}>
-          Add book
+          Add a book
         </Button>
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
